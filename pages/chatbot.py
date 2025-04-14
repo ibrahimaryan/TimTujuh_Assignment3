@@ -26,8 +26,8 @@ def main():
         
     # Tombol Reset Chat
     if st.button("🔄 Reset Chat"):
-        st.session_state.clear()  # Lebih aman, menghapus seluruh session state
-        st.experimental_rerun()   # Lakukan rerun ulang halaman
+        st.session_state["messages"] = []  # Clear history
+        st.switch_page("pages/chatbot")    # Arahkan ulang ke halaman chatbot
 
 
 if __name__ == "__main__":
