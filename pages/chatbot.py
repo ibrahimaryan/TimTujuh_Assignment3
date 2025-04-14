@@ -27,7 +27,7 @@ def main():
     # Tombol Reset Chat
     if st.button("🔄 Reset Chat"):
         st.session_state["messages"] = []  # Clear history
-        st.switch_page("pages/chatbot")    # Arahkan ulang ke halaman chatbot
+        st.switch_page("chatbot")    # Arahkan ulang ke halaman chatbot
 
 
 if __name__ == "__main__":
