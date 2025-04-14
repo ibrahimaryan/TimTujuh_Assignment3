@@ -23,12 +23,6 @@ def main():
         with st.chat_message("assistant"):
             st.markdown(response)
         st.session_state.messages.append({"role": "assistant", "content": response})
-        
-    # Tombol Reset Chat
-    if st.button("🔄 Reset Chat"):
-        st.session_state["messages"] = []  # Clear history
-        st.switch_page("chatbot")    # Arahkan ulang ke halaman chatbot
-
 
 if __name__ == "__main__":
     main()

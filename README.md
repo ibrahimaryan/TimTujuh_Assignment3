@@ -17,5 +17,5 @@ Kode sederhana esp32 melakukan collect data sensor mengirim ke dashboard ubidots
 - Jalankan esp32 setelah server.py berjalan
 - Untuk menjalankan streamlit secara lokal
 > streamlit run dashboard.py
-- Atau bisa mengunjungi [link berikut](https://stem.ubidots.com/app/dashboards/public/dashboard/lvaP28Nk53BCHKAnCaAvYak4ZQhuH_SsENEs8u3-PTM?navbar=true&contextbar=false) untuk menggunakan streamlit melalui streamlit cloud
+- Atau bisa mengunjungi [link berikut](https://timtujuhassignment3-em4oqdkqcdtkfpf8skflxr.streamlit.app) untuk menggunakan streamlit melalui streamlit cloud
 - Monitoring melalui [ubidots](https://stem.ubidots.com/app/dashboards/public/dashboard/lvaP28Nk53BCHKAnCaAvYak4ZQhuH_SsENEs8u3-PTM?navbar=true&contextbar=false)
