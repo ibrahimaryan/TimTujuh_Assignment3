@@ -2,6 +2,7 @@ import streamlit as st
 from model.genai import get_response
 
 def main():
+    st.set_page_config(page_title="Chatbot", layout="wide")
     st.title("Chat Bot")
 
     # Inisialisasi riwayat chat
