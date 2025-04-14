@@ -7,9 +7,9 @@ Kode sederhana esp32 melakukan collect data sensor mengirim ke dashboard ubidots
 > SERVER_URL =  "http://172.90.1.26:5000/sensor"
 - Ubah bagian ini di esp32.py :
 > SSID = "Pixel_3770"   # Ganti dengan nama WiFi
+
 > PASSWORD = "adamhawa"  # Ganti dengan password WiFi
-- Pastikan sudah melakukan install depedensi berikut :
-> pip install flask pymongo flask-cors
+- Pastikan sudah melakukan install depedensi seperti di requirements.txt
 - Jalankan file **server.py**
 > python server.py
 - Jika berhasil akan menampilkan output
