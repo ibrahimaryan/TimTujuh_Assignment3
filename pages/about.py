@@ -9,8 +9,8 @@ Ini merupakan mini projek studi kasus **alarm kebakaran** yang memadukan **IoT**
 Kasus ini terinspirasi dari sistem **alarm kebakaran di hutan** yang bertujuan mendeteksi dan mengirimkan data secara real-time melalui sensor ke server.
 
 #### 👥 Anggota Tim dan Pembagian Tugas:
-1. **Aldo** : Tugas 1  
-2. **Ammar** : Tugas 2  
-3. **Danu** : Tugas 3  
-4. **Ibrahim** : Tugas 4
+1. **Aldo Ramadhana** : Membuat middleware dan database mongodbatlas
+2. **Ammar Luqman Arifin** : Menentukan alur pengiriman data hingga tampil di dashboard
+3. **Danu Alamsyah Putra** : Merangkai hardware IoT dan membuat kodenya
+4. **Ibrahim Aryan Faridzi** : Membuat dashboard ubidots, membuat dahsboard streamlit, dan implementasi AI
 """)
