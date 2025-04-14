@@ -1,5 +1,6 @@
 import streamlit as st
 from model.genai import get_response
+from urllib.parse import urlencode
 
 def main():
     st.set_page_config(page_title="Chatbot", layout="wide")
@@ -23,6 +24,13 @@ def main():
         with st.chat_message("assistant"):
             st.markdown(response)
         st.session_state.messages.append({"role": "assistant", "content": response})
+        
+    # Gunakan tombol redirect
+    if st.button("🔁 Kembali ke Chatbot"):
+        base_url = st.get_url()
+        query = urlencode({"page": "chatbot"})
+        st.markdown(f'<meta http-equiv="refresh" content="0; URL={base_url}?{query}">', unsafe_allow_html=True)
+
 
 if __name__ == "__main__":
     main()
