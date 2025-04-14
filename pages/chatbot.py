@@ -25,11 +25,10 @@ def main():
             st.markdown(response)
         st.session_state.messages.append({"role": "assistant", "content": response})
         
-    # Gunakan tombol redirect
-    if st.button("🔁 Kembali ke Chatbot"):
-        base_url = st.get_url()
-        query = urlencode({"page": "chatbot"})
-        st.markdown(f'<meta http-equiv="refresh" content="0; URL={base_url}?{query}">', unsafe_allow_html=True)
+    # Tombol Reset
+    if st.button("🔄 Reset Chat"):
+        st.session_state["messages"] = []
+        st.rerun()  # Ini cukup untuk me-reset tanpa redirect
 
 
 if __name__ == "__main__":
