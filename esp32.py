@@ -1,4 +1,4 @@
-from machine import Pin, ADC
+from machine import Pin, ADC, PWM
 import time
 import urequests as requests
 import dht
@@ -12,32 +12,30 @@ ldr.width(ADC.WIDTH_10BIT)
 dht_pin = Pin(15)  # DHT11 di GPIO15
 sensor_dht = dht.DHT11(dht_pin)
 
-pir = Pin(5, Pin.IN)  # PIR di GPIO5
+pir = Pin(4, Pin.IN)  # PIR di GPIO5
+
+# Inisialisasi buzzer di GPIO21
+buzzer = PWM(Pin(21), duty=0)  # Mulai dengan duty 0 (diam)
 
 # Konfigurasi Wi-Fi
-SSID = "Pixel_3770"   # Ganti dengan nama WiFi
-PASSWORD = "adamhawa"  # Ganti dengan password WiFi
+SSID = "Redmi9"
+PASSWORD = "haaaaaah"
 
 # Konfigurasi Ubidots
-TOKEN = "BBUS-A33lRaUTEicWD2INjCihT8n0yODbOp"  # Ganti dengan token Anda
-DEVICE_LABEL = "esp32-sic6-assignment3"  # Label perangkat di Ubidots
+TOKEN = "BBUS-A33lRaUTEicWD2INjCihT8n0yODbOp"
+DEVICE_LABEL = "esp32-sic6-assignment3"
 VARIABLE_LABEL_TEMP = "Temperature"
 VARIABLE_LABEL_HUM = "Humidity"
 VARIABLE_LABEL_LDR = "LDR"
 VARIABLE_LABEL_MOTION = "Motion"
 
-# Konfigurasi Middleware (Server API untuk MongoDB)
-#SERVER_URL = "http://10.75.141.213:5000/sensor"  # Ganti dengan alamat server Anda
-
 def connect_wifi():
-    """Menghubungkan ESP32 ke Wi-Fi"""
     wlan = network.WLAN(network.STA_IF)
     wlan.active(True)
     if not wlan.isconnected():
         print("[INFO] Menghubungkan ke Wi-Fi...")
         wlan.connect(SSID, PASSWORD)
-        
-        timeout = 10  # Maksimal 10 detik untuk koneksi
+        timeout = 10
         while not wlan.isconnected() and timeout > 0:
             time.sleep(1)
             timeout -= 1
@@ -45,40 +43,45 @@ def connect_wifi():
     if wlan.isconnected():
         print("[INFO] Terhubung ke Wi-Fi:", wlan.ifconfig())
     else:
-        print("[ERROR] Gagal terhubung ke Wi-Fi! Periksa SSID/PASSWORD.")
+        print("[ERROR] Gagal terhubung ke Wi-Fi!")
 
 def read_sensors():
-    """Membaca data dari DHT11, PIR, dan LDR"""
     try:
         sensor_dht.measure()
-        temperature = sensor_dht.temperature()  # Dalam Celsius
+        temperature = sensor_dht.temperature()
         humidity = sensor_dht.humidity()
-        ldr_value = ldr.read()  # Baca nilai LDR (0-1023)
+        ldr_value = ldr.read()
     except Exception as e:
         print("[ERROR] Gagal membaca sensor DHT11:", e)
         temperature, humidity, ldr_value = None, None, None
 
-    motion = pir.value()  # 1 jika ada gerakan, 0 jika tidak
+    motion = pir.value()
     
     return temperature, humidity, motion, ldr_value
 
 def build_payload(temperature, humidity, motion, ldr_value):
-    """Membangun payload untuk dikirim ke Ubidots & MongoDB"""
     if temperature is None or humidity is None:
         print("[ERROR] Data sensor tidak valid, tidak mengirim data!")
         return None
-    
+
     payload = {
         "temperature": temperature,
         "humidity": humidity,
         "ldr": ldr_value,
         "motion": motion
     }
-    
+
+    # Cek kondisi potensi kebakaran
+    if temperature > 28 and humidity < 90 and ldr_value > 200:
+        payload["alert"] = "Ada potensi kebakaran"
+        buzzer.freq(1000)
+        buzzer.duty(512)  # Bunyikan buzzer
+        print("[ALERT] Potensi kebakaran terdeteksi!")
+    else:
+        buzzer.duty(0)  # Matikan buzzer jika tidak memenuhi
     return payload
 
 def post_request(payload):
-    """Mengirimkan data ke Ubidots"""
     if payload is None:
         return False
 
@@ -110,15 +113,14 @@ def post_request(payload):
     return False
 
 def post_db(payload):
-    SERVER_URL = "http://10.75.141.213:5000/sensor"
-    
+    SERVER_URL = "http://192.168.79.213:5000/sensor"
+
     if payload is None:
         print("[ERROR] Payload tidak valid, tidak mengirim data!")
         return False
 
     headers = {"Content-Type": "application/json"}
 
-    # Cek format data sebelum dikirim
     print("[DEBUG] Data yang dikirim ke server:", payload)
 
     try:
@@ -131,17 +133,16 @@ def post_db(payload):
         return False
 
 def main():
-    """Fungsi utama untuk membaca sensor dan mengirim data"""
     temperature, humidity, motion, ldr_value = read_sensors()
     payload = build_payload(temperature, humidity, motion, ldr_value)
 
     if payload:
         print("[INFO] Mengirim data ke Ubidots dan MongoDB...")
-        post_request(payload)  # Kirim ke Ubidots
-        post_db(payload)       # Kirim ke middleware MongoDB
+        post_request(payload)
+        post_db(payload)
 
 if __name__ == '__main__':
-    connect_wifi()  # Hubungkan Wi-Fi saat startup
+    connect_wifi()
     while True:
         main()
-        time.sleep(10)  # Kirim data setiap 10 detik
+        time.sleep(8)

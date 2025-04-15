@@ -17,7 +17,7 @@ st.set_page_config(page_title="Dashboard Sensor ESP32", layout="wide")
 st.title("📊 Dashboard Alarm Kebakaran - UNI415 Tim Tujuh")
 st.markdown("Data suhu, kelembapan, LDR, dan gerakan dari MongoDB terbaru.")
 
-@st.cache_data(ttl=30)
+@st.cache_data(ttl=8)
 def get_sensor_data():
     try:
         # Mengambil data dari MongoDB
@@ -45,6 +45,20 @@ col1.metric("🌡️ Suhu (°C)", f"{latest['temperature']} °C")
 col2.metric("💧 Kelembapan (%)", f"{latest['humidity']} %")
 col3.metric("☀️ LDR", f"{latest['ldr']}")
 col4.metric("🚶 Gerakan", "Terdeteksi" if latest['motion'] == 1 else "Tidak Ada")
+
+# ===== Status Potensi Kebakaran =====
+status_placeholder = st.empty()
+
+# Logika status bertingkat
+if latest["temperature"] > 28 and latest["humidity"] < 90 and latest["ldr"] > 200:
+    status_text = "🚨 **Siaga: Ada kebakaran!**"
+    status_placeholder.error(status_text)
+elif latest["temperature"] > 26 and latest["humidity"] < 95 and latest["ldr"] > 100:
+    status_text = "⚠️ **Hati-hati: Potensi kebakaran**"
+    status_placeholder.warning(status_text)
+else:
+    status_text = "✅ **Aman**"
+    status_placeholder.success(status_text)
 
 # ===== AI Prompt =====
 auto_prompt = (
@@ -117,4 +131,4 @@ with col2:
         x="timestamp:T", y=alt.Y("ldr:Q", title="Nilai LDR"),
         tooltip=["timestamp", "ldr"]), use_container_width=True)
 
-st_autorefresh(interval=30000, key="data_refresh")
+st_autorefresh(interval=8000, key="data_refresh")
