@@ -50,10 +50,10 @@ col4.metric("🚶 Gerakan", "Terdeteksi" if latest['motion'] == 1 else "Tidak Ad
 status_placeholder = st.empty()
 
 # Logika status bertingkat
-if latest["temperature"] > 28 and latest["humidity"] < 90 and latest["ldr"] > 200:
+if latest["temperature"] > 26 and latest["humidity"] < 90 and latest["ldr"] > 200:
     status_text = "🚨 **Siaga: Ada kebakaran!**"
     status_placeholder.error(status_text)
-elif latest["temperature"] > 26 and latest["humidity"] < 95 and latest["ldr"] > 100:
+elif latest["temperature"] > 24 and latest["humidity"] < 95 and latest["ldr"] > 100:
     status_text = "⚠️ **Hati-hati: Potensi kebakaran**"
     status_placeholder.warning(status_text)
 else:

@@ -72,7 +72,7 @@ def build_payload(temperature, humidity, motion, ldr_value):
     }
 
     # Cek kondisi potensi kebakaran
-    if temperature > 28 and humidity < 90 and ldr_value > 200:
+    if temperature > 26 and humidity < 90 and ldr_value > 200:
         payload["alert"] = "Ada potensi kebakaran"
         buzzer.freq(1000)
         buzzer.duty(512)  # Bunyikan buzzer
